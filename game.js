@@ -39,7 +39,7 @@ gameport.appendChild(app.view);
 
 loader
     .add('sheet', 'sprites/assets.json')
-    .load(initGame);
+    .load(initStartMenu);
 
 
 function initStartMenu() {
@@ -204,7 +204,7 @@ function initGame() {
     loseRestartBtn.position.set(app.stage.width / 2, app.stage.height - 200);
     loseRestartBtn.interactive = true;
     loseRestartBtn.buttonMode = true;
-    loseRestartBtn.on('pointerdown', initGame);
+    loseRestartBtn.on('pointerdown', initStartMenu);
     loseScreen.addChild(loseRestartBtn);
     loseScreen.visible = false;
     app.stage.addChild(loseScreen);
@@ -218,7 +218,7 @@ function initGame() {
     winRestartBtn.position.set(app.stage.width / 2, app.stage.height - 200);
     winRestartBtn.interactive = true;
     winRestartBtn.buttonMode = true;
-    winRestartBtn.on('pointerdown', initGame);
+    winRestartBtn.on('pointerdown', initStartMenu);
     winScreen.addChild(winRestartBtn);
     winScreen.visible = false;
     app.stage.addChild(winScreen);
