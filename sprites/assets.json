@@ -94,7 +94,7 @@
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":801},
-	"sourceSize": {"w":800,"h":801}
+	"sourceSize": {"w":800,"h":800}
 },
 "StartBtn.png":
 {
@@ -134,7 +134,7 @@
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":801},
-	"sourceSize": {"w":800,"h":801}
+	"sourceSize": {"w":800,"h":800}
 }},
 "animations": {
 	"Bambi": ["Bambi1.png","Bambi2.png","Bambi3.png","Bambi4.png","Bambi5.png","Bambi6.png","Bambi7.png","Bambi8.png"]

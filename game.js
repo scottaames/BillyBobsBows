@@ -29,7 +29,10 @@ let gameScreen = new Container(),
     arrow,
     bambiAlive,
     bambiAliveMovie,
-    gameState;
+    gameState,
+    timeLeft,
+    timer,
+    timerId;
 
 const gameport = document.getElementById("gameport");
 gameport.appendChild(app.view);
@@ -99,8 +102,9 @@ function initGame() {
     bambiAliveMovie.position.set( app.stage.width/2, app.stage.height/4);
     bambiAliveMovie.anchor.set(0.5);
     bambiAliveMovie.animationSpeed = .1;
-    bambiAliveMovie.play();
     bambiAliveMovie.visible = false;
+    bambiAliveMovie.interactive = true;
+    bambiAliveMovie.on('pointerdown', mouseHandler.bind(this));
     gameScreen.addChild(bambiAliveMovie);
 
     // creat target sprites
@@ -128,7 +132,6 @@ function initGame() {
 
         target.position.set(x, y);
         target.interactive = true;
-        target.buttonMode = true;
         target.on('pointerdown', mouseHandler.bind(this));
         targets.push(target);
         gameScreen.addChild(target);
@@ -153,7 +156,6 @@ function initGame() {
 
         target.position.set(x, y);
         target.interactive = true;
-        target.buttonMode = true;
         target.on('pointerdown', mouseHandler.bind(this));
         targets.push(target);
         gameScreen.addChild(target);
@@ -192,9 +194,67 @@ function initGame() {
     arrow.visible = true;
     gameScreen.addChild(arrow);
 
+    // lose screen
+    let loseScreenTexture = TextureCache["LoseScreen.png"],
+        loseScreenCanvas = new Sprite(loseScreenTexture),
+        startButtonTexture = TextureCache["StartBtn.png"],
+        loseRestartBtn = new Sprite(startButtonTexture);
+    loseScreen.addChild(loseScreenCanvas);
+    loseRestartBtn.anchor.set(0.5);
+    loseRestartBtn.position.set(app.stage.width / 2, app.stage.height - 200);
+    loseRestartBtn.interactive = true;
+    loseRestartBtn.buttonMode = true;
+    loseRestartBtn.on('pointerdown', initGame);
+    loseScreen.addChild(loseRestartBtn);
+    loseScreen.visible = false;
+    app.stage.addChild(loseScreen);
+
+    // win screen
+    let winScreenTexture = TextureCache["WinScreen.png"],
+        winScreenCanvas = new Sprite(winScreenTexture),
+        winRestartBtn = new Sprite(startButtonTexture);
+    winScreen.addChild(winScreenCanvas);
+    winRestartBtn.anchor.set(0.5);
+    winRestartBtn.position.set(app.stage.width / 2, app.stage.height - 200);
+    winRestartBtn.interactive = true;
+    winRestartBtn.buttonMode = true;
+    winRestartBtn.on('pointerdown', initGame);
+    winScreen.addChild(winRestartBtn);
+    winScreen.visible = false;
+    app.stage.addChild(winScreen);
+
+    // timer
+    let style = new TextStyle({
+        fontFamily: "Futura",
+        fontSize: 64,
+        fill: "yellow"
+    });
+
+    timer = new Text("", style);
+    timer.x = 10;
+    timer.y = 0;
+    gameScreen.addChild(timer);
+
     gameState = play;
 
     app.ticker.add(delta => gameLoop(delta));
+
+    timeLeft = 30;
+    timerId = setInterval(countdownTimer, 1000);
+}
+
+function countdownTimer()
+{
+    if (timeLeft == 0)
+    {
+        clearTimeout(timerId);
+        gameState = lose;
+    }
+    else
+    {
+        timer.setText(timeLeft);
+        timeLeft--;
+    }
 }
 
 function gameLoop(delta)
@@ -204,38 +264,63 @@ function gameLoop(delta)
 
 function play(delta)
 {
+    let hitCount = 0;
 
+    for (var i = 0; i < targets.length; i++)
+    {
+        if (targets[i].visible == false)
+        {
+            hitCount++;
+        }
+    }
+
+    if (hitCount == targets.length)
+    {
+        bambiAliveMovie.play();
+        bambiAliveMovie.visible = true;
+    }
+
+}
+
+function win()
+{
+    gameScreen.visible = false;
+    winScreen.visible = true;
+}
+
+function lose()
+{
+    gameScreen.visible = false;
+    loseScreen.visible = true;
 }
 
 function mouseHandler(e)
 {
     let self = e.currentTarget,
         bowDestX = self.x,
-        startX = bowDrawn.x;
-
-    console.log(self.x - startX);
+        startX = bowDrawn.x,
+        distanceToTravel = Math.abs(self.x - startX);
 
     createjs.Tween.get(bowDrawn.position).to({
         x: bowDestX,
         y: app.stage.height},
-        self.x - startX == 225 || self.x - startX == -225? 850 : 1250,
+        distanceToTravel > 0 ? 750 : 250,
         createjs.Ease.linear
     );
 
     createjs.Tween.get(arrow.position).to({
         x: bowDestX,
         y: app.stage.height - arrow.height},
-        self.x - startX == 225 || self.x - startX == -225? 850 : 1250,
+        distanceToTravel > 0 ? 750 : 250,
         createjs.Ease.linear
     );
 
-    createjs.Tween.get(bowDrawn).to({
+    createjs.Tween.get(bowDrawn).wait(distanceToTravel > 0 ? 750 : 250).set({
         visible: false},
-        self.x - startX == 225 || self.x - startX == -225? 850 : 1250,
-    ).call(shotAnimation, [self, startX] );
+    ).call(shotAnimation, [self] );
 }
 
-function shotAnimation(self, startX)
+function shotAnimation(self)
 {
     let arrowDestX = self.x,
         arrowDestY = self.y + self.height/2;
@@ -246,26 +331,49 @@ function shotAnimation(self, startX)
     createjs.Tween.get(arrow.position).to({
         x: arrowDestX,
         y: arrowDestY },
-        self.x - startX == 225 || self.x - startX == -225? 850 : 1250,
+        500,
         createjs.Ease.linear
-    ).call(resetShotTo, [arrowDestX, arrowDestY] );
+    );
+
+    createjs.Tween.get(self).wait(750).to({
+        alpha: 0,
+        visible: false},
+        250
+    ).call(resetShotTo, [self] );
 }
 
-function resetShotTo(x, y)
+function resetShotTo(self)
 {
-    createjs.Tween.get(arrow).wait(500).to({
-        opacity: 0,
+    createjs.Tween.get(arrow).to({
+        alpha: 0,
         visible: false},
-        500
+        250
     );
 
-    createjs.Tween.get(bowReleased).wait(500).to({
-        opacity: 0,
+    createjs.Tween.get(bowReleased).wait(250).set({
+        alpha: 0,
         visible: false},
-        500
     );
 
+    createjs.Tween.get(arrow.position).wait(250).set({
+        x: self.x,
+        y: app.stage.height - arrow.height},
+    );
 
+    createjs.Tween.get(arrow).wait(750).set({
+        alpha: 1,
+        visible: true}
+    );
+
+    createjs.Tween.get(bowDrawn).wait(750).set({
+        alpha: 1,
+        visible: true }
+    );
+
+    if( bambiAliveMovie == self )
+    {
+        gameState = win;
+    }
 }
 
 function randomInt(min, max)
