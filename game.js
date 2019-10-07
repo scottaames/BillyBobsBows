@@ -197,30 +197,28 @@ function initGame() {
     // lose screen
     let loseScreenTexture = TextureCache["LoseScreen.png"],
         loseScreenCanvas = new Sprite(loseScreenTexture),
-        startButtonTexture = TextureCache["StartBtn.png"],
-        loseRestartBtn = new Sprite(startButtonTexture);
+        restartBtnTexture = TextureCache["RestartBtn.png"],
+        restartBtn = new Sprite(restartBtnTexture);
     loseScreen.addChild(loseScreenCanvas);
-    loseRestartBtn.anchor.set(0.5);
-    loseRestartBtn.position.set(app.stage.width / 2, app.stage.height - 200);
-    loseRestartBtn.interactive = true;
-    loseRestartBtn.buttonMode = true;
-    loseRestartBtn.on('pointerdown', initStartMenu);
-    loseScreen.addChild(loseRestartBtn);
     loseScreen.visible = false;
+    restartBtn.anchor.set(0.5);
+    restartBtn.position.set(app.stage.width / 2, app.stage.height - 200);
+    restartBtn.interactive = true;
+    restartBtn.on('pointerdown', restart);
+    loseScreen.addChild(restartBtn);
     app.stage.addChild(loseScreen);
 
     // win screen
     let winScreenTexture = TextureCache["WinScreen.png"],
         winScreenCanvas = new Sprite(winScreenTexture),
-        winRestartBtn = new Sprite(startButtonTexture);
+        winRestartBtn = new Sprite(restartBtnTexture);
     winScreen.addChild(winScreenCanvas);
+    winScreen.visible = false;
     winRestartBtn.anchor.set(0.5);
     winRestartBtn.position.set(app.stage.width / 2, app.stage.height - 200);
     winRestartBtn.interactive = true;
-    winRestartBtn.buttonMode = true;
-    winRestartBtn.on('pointerdown', initStartMenu);
+    winRestartBtn.on('pointerdown', restart);
     winScreen.addChild(winRestartBtn);
-    winScreen.visible = false;
     app.stage.addChild(winScreen);
 
     // timer
@@ -296,6 +294,8 @@ function lose()
 
 function mouseHandler(e)
 {
+    app.renderer.plugins.interaction.destroy();
+
     let self = e.currentTarget,
         bowDestX = self.x,
         startX = bowDrawn.x,
@@ -373,6 +373,15 @@ function resetShotTo(self)
     if( bambiAliveMovie == self )
     {
         gameState = win;
+    }
+    app.renderer.plugins.interaction = new PIXI.interaction.InteractionManager(app.renderer);
+}
+
+function restart()
+{
+    if(startScreen.visible != true)
+    {
+        location.reload();
     }
 }
 

@@ -1,8 +1,16 @@
 {"frames": {
 
+"Arrow.png":
+{
+	"frame": {"x":206,"y":150,"w":25,"h":202},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":202},
+	"sourceSize": {"w":25,"h":202}
+},
 "Bambi1.png":
 {
-	"frame": {"x":425,"y":0,"w":100,"h":100},
+	"frame": {"x":1130,"y":0,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -10,7 +18,7 @@
 },
 "Bambi2.png":
 {
-	"frame": {"x":625,"y":0,"w":100,"h":100},
+	"frame": {"x":1230,"y":0,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -18,7 +26,7 @@
 },
 "Bambi3.png":
 {
-	"frame": {"x":725,"y":0,"w":100,"h":100},
+	"frame": {"x":1430,"y":0,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -26,7 +34,7 @@
 },
 "Bambi4.png":
 {
-	"frame": {"x":525,"y":0,"w":100,"h":100},
+	"frame": {"x":1330,"y":0,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -34,7 +42,7 @@
 },
 "Bambi5.png":
 {
-	"frame": {"x":25,"y":0,"w":100,"h":100},
+	"frame": {"x":605,"y":0,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -42,7 +50,7 @@
 },
 "Bambi6.png":
 {
-	"frame": {"x":125,"y":0,"w":100,"h":100},
+	"frame": {"x":705,"y":0,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -50,7 +58,7 @@
 },
 "Bambi7.png":
 {
-	"frame": {"x":225,"y":0,"w":100,"h":100},
+	"frame": {"x":205,"y":0,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -58,7 +66,7 @@
 },
 "Bambi8.png":
 {
-	"frame": {"x":325,"y":0,"w":100,"h":100},
+	"frame": {"x":305,"y":0,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -66,7 +74,7 @@
 },
 "BowDrawn.png":
 {
-	"frame": {"x":1380,"y":0,"w":206,"h":156},
+	"frame": {"x":0,"y":150,"w":206,"h":156},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":206,"h":156},
@@ -74,7 +82,7 @@
 },
 "BowReleased.png":
 {
-	"frame": {"x":1175,"y":0,"w":205,"h":36},
+	"frame": {"x":0,"y":0,"w":205,"h":36},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":205,"h":36},
@@ -82,7 +90,7 @@
 },
 "GameScreen.png":
 {
-	"frame": {"x":0,"y":1003,"w":800,"h":801},
+	"frame": {"x":800,"y":951,"w":800,"h":801},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":801},
@@ -90,15 +98,23 @@
 },
 "LoseScreen.png":
 {
-	"frame": {"x":800,"y":202,"w":800,"h":801},
+	"frame": {"x":1031,"y":150,"w":800,"h":801},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":801},
-	"sourceSize": {"w":800,"h":800}
+	"sourceSize": {"w":800,"h":801}
+},
+"RestartBtn.png":
+{
+	"frame": {"x":805,"y":0,"w":325,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":325,"h":100},
+	"sourceSize": {"w":325,"h":100}
 },
 "StartBtn.png":
 {
-	"frame": {"x":975,"y":0,"w":200,"h":100},
+	"frame": {"x":405,"y":0,"w":200,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":200,"h":100},
@@ -106,7 +122,7 @@
 },
 "StartScreen.png":
 {
-	"frame": {"x":0,"y":202,"w":800,"h":800},
+	"frame": {"x":231,"y":150,"w":800,"h":800},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":800},
@@ -114,27 +130,19 @@
 },
 "Target.png":
 {
-	"frame": {"x":825,"y":0,"w":150,"h":150},
+	"frame": {"x":1530,"y":0,"w":150,"h":150},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":150,"h":150},
 	"sourceSize": {"w":150,"h":150}
 },
-"Arrow.png":
-{
-	"frame": {"x":0,"y":0,"w":25,"h":202},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":202},
-	"sourceSize": {"w":25,"h":202}
-},
 "WinScreen.png":
 {
-	"frame": {"x":800,"y":1003,"w":800,"h":801},
+	"frame": {"x":0,"y":951,"w":800,"h":801},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":801},
-	"sourceSize": {"w":800,"h":800}
+	"sourceSize": {"w":800,"h":801}
 }},
 "animations": {
 	"Bambi": ["Bambi1.png","Bambi2.png","Bambi3.png","Bambi4.png","Bambi5.png","Bambi6.png","Bambi7.png","Bambi8.png"]
@@ -144,8 +152,8 @@
 	"version": "1.0",
 	"image": "assets.png",
 	"format": "RGBA8888",
-	"size": {"w":1600,"h":1804},
+	"size": {"w":1831,"h":1752},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:23b29b01d173e2562fc130ca27ff6155:a5b77b4c204cb60e9931e9a7b8fefd3f:a759b6bbc8381ac9c472b28f589ad0d6$"
+	"smartupdate": "$TexturePacker:SmartUpdate:66e803809594a04224e11abcc8c6719e:76b3a95cd37fa9b8d1b32a0fe6775a48:a759b6bbc8381ac9c472b28f589ad0d6$"
 }
 }
