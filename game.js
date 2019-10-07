@@ -4,11 +4,10 @@ const Application = PIXI.Application,
     resources = PIXI.loader.resources,
     Texture = PIXI.Texture,
     Sprite = PIXI.Sprite,
-    AnimatedSprite = PIXI.extras.AnimatedSprite,
-    TextureCache = PIXI.TextureCache,
+    TextureCache = PIXI.utils.TextureCache,
     Graphics = PIXI.Graphics,
     Text = PIXI.Text,
-    MovieClip = PIXI.extras.MovieClip,
+    AnimatedSprite = PIXI.extras.AnimatedSprite,
     TextStyle = PIXI.TextStyle;
 
 const app = new Application({
@@ -32,15 +31,38 @@ let gameScreen = new Container(),
     gameState,
     timeLeft,
     timer,
-    timerId;
+    timerId,
+    winMp3,
+    loseMp3,
+    startMp3,
+    targetHitMp3,
+    arrowMp3;
 
 const gameport = document.getElementById("gameport");
 gameport.appendChild(app.view);
 
-loader
-    .add('sheet', 'sprites/assets.json')
+loader.add("sprites/assets.json")
     .load(initStartMenu);
 
+sounds.load([
+    "audio/start.mp3",
+    "audio/win.mp3",
+    "audio/lose.mp3",
+    "audio/arrow.mp3",
+    "audio/targetHit.mp3"
+]);
+
+sounds.whenLoaded = soundInit;
+
+function soundInit()
+{
+    // add mp3 audio clips
+    winMp3 = sounds["audio/win.mp3"];
+    loseMp3 = sounds["audio/lose.mp3"];
+    startMp3 = sounds["audio/start.mp3"];
+    arrowMp3 = sounds["audio/arrow.mp3"];
+    targetHitMp3 = sounds["audio/targetHit.mp3"];
+}
 
 function initStartMenu() {
 
@@ -62,10 +84,13 @@ function initStartMenu() {
     startButton.on('pointerdown', initGame);
 }
 
-function initGame() {
+function initGame()
+{
+    // play start sound
+    startMp3.play();
 
+    // get rid of start screen and add game screen
     startScreen.visible = false;
-    gameScreen.sorta
     app.stage.addChild(gameScreen);
 
     let gameTexture = TextureCache["GameScreen.png"],
@@ -98,7 +123,7 @@ function initGame() {
         bambiAlive.push(TextureCache['Bambi' + i + '.png']);
     }
 
-    bambiAliveMovie = new MovieClip(bambiAlive);
+    bambiAliveMovie = new AnimatedSprite(bambiAlive);
     bambiAliveMovie.position.set( app.stage.width/2, app.stage.height/4);
     bambiAliveMovie.anchor.set(0.5);
     bambiAliveMovie.animationSpeed = .1;
@@ -114,7 +139,9 @@ function initGame() {
         ySpacing = 0;
 
 
-    targets = [];
+    targets = new Container();
+    gameScreen.addChild(targets);
+    targets.interactive = true;
 
     // 1st col targets
     for( var i = 0; i < numTargets - 6; i++)
@@ -133,8 +160,8 @@ function initGame() {
         target.position.set(x, y);
         target.interactive = true;
         target.on('pointerdown', mouseHandler.bind(this));
-        targets.push(target);
-        gameScreen.addChild(target);
+        targets.addChild(target);
+        //gameScreen.addChild(target);
     }
 
     // reset yspacing
@@ -157,8 +184,8 @@ function initGame() {
         target.position.set(x, y);
         target.interactive = true;
         target.on('pointerdown', mouseHandler.bind(this));
-        targets.push(target);
-        gameScreen.addChild(target);
+        targets.addChild(target);
+        //gameScreen.addChild(target);
     }
 
     // reset yspacing
@@ -180,10 +207,9 @@ function initGame() {
 
         target.position.set(x, y);
         target.interactive = true;
-        target.buttonMode = true;
         target.on('pointerdown', mouseHandler.bind(this));
-        targets.push(target);
-        gameScreen.addChild(target);
+        targets.addChild(target);
+        //gameScreen.addChild(target);
     }
 
     let arrowTexture = TextureCache["Arrow.png"];
@@ -237,20 +263,21 @@ function initGame() {
 
     app.ticker.add(delta => gameLoop(delta));
 
-    timeLeft = 30;
+    timeLeft = 45;
     timerId = setInterval(countdownTimer, 1000);
 }
 
 function countdownTimer()
 {
-    if (timeLeft == 0)
+    if (timeLeft == 0 && winScreen.visible == false)
     {
         clearTimeout(timerId);
+        loseMp3.play();
         gameState = lose;
     }
     else
     {
-        timer.setText(timeLeft);
+        timer.text = timeLeft;
         timeLeft--;
     }
 }
@@ -264,20 +291,26 @@ function play(delta)
 {
     let hitCount = 0;
 
-    for (var i = 0; i < targets.length; i++)
+    for (var i = 0; i < targets.children.length; i++)
     {
-        if (targets[i].visible == false)
+        if (targets.children[i].visible == false)
         {
             hitCount++;
         }
     }
 
-    if (hitCount == targets.length)
+    if (hitCount == targets.children.length)
     {
-        bambiAliveMovie.play();
-        bambiAliveMovie.visible = true;
+        if( bambiAliveMovie.visible == false)
+        {
+            app.renderer.plugins.interaction = new PIXI.interaction.InteractionManager(app.renderer);
+            targets.visible = false;
+            bambiAliveMovie.play();
+            bambiAliveMovie.scale.set(1.5);
+            bambiAliveMovie.visible = true;
+            animateBambi();
+        }
     }
-
 }
 
 function win()
@@ -292,8 +325,19 @@ function lose()
     loseScreen.visible = true;
 }
 
+function animateBambi()
+{
+    createjs.Tween.get(bambiAliveMovie, { loop: true })
+        .to({x: randomInt(bambiAliveMovie.width/2, app.stage.width - bambiAliveMovie.width/2)}, 250, createjs.Ease.getPowInOut(4))
+        .to({alpha: 0, y: randomInt(bambiAliveMovie.height/2, app.stage.height - bambiAliveMovie.height/2)}, 500, createjs.Ease.getPowInOut(2))
+        .to({alpha: 1, y: randomInt(bambiAliveMovie.height/2, app.stage.height - bambiAliveMovie.height/2)}, 500)
+        .to({alpha: 0, y: randomInt(bambiAliveMovie.height/2, app.stage.height - bambiAliveMovie.height/2)}, 500, createjs.Ease.getPowInOut(2))
+        .to({x: randomInt(bambiAliveMovie.width/2, app.stage.width - bambiAliveMovie.width/2)}, 500, createjs.Ease.getPowInOut(2));
+}
+
 function mouseHandler(e)
 {
+    // disable clicks
     app.renderer.plugins.interaction.destroy();
 
     let self = e.currentTarget,
@@ -328,6 +372,8 @@ function shotAnimation(self)
     bowReleased.position.set(self.x, app.stage.height - bowDrawn.height + bowReleased.height);
     bowReleased.visible = true;
 
+    arrowMp3.play();
+
     createjs.Tween.get(arrow.position).to({
         x: arrowDestX,
         y: arrowDestY },
@@ -335,7 +381,7 @@ function shotAnimation(self)
         createjs.Ease.linear
     );
 
-    createjs.Tween.get(self).wait(750).to({
+    createjs.Tween.get(self).wait(500).to({
         alpha: 0,
         visible: false},
         250
@@ -344,14 +390,15 @@ function shotAnimation(self)
 
 function resetShotTo(self)
 {
+    targetHitMp3.play();
+
     createjs.Tween.get(arrow).to({
         alpha: 0,
         visible: false},
         250
     );
 
-    createjs.Tween.get(bowReleased).wait(250).set({
-        alpha: 0,
+    createjs.Tween.get(bowReleased).wait(750).set({
         visible: false},
     );
 
@@ -370,11 +417,13 @@ function resetShotTo(self)
         visible: true }
     );
 
+    app.renderer.plugins.interaction = new PIXI.interaction.InteractionManager(app.renderer);
+
     if( bambiAliveMovie == self )
     {
+        winMp3.play();
         gameState = win;
     }
-    app.renderer.plugins.interaction = new PIXI.interaction.InteractionManager(app.renderer);
 }
 
 function restart()
